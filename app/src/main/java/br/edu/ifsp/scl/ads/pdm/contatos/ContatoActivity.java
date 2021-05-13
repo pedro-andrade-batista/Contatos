@@ -46,16 +46,7 @@ public class ContatoActivity extends AppCompatActivity {
                 activityContatoBinding.sitePessoalEt.getText().toString()
         );
         switch (view.getId()){
-            case R.id.ligarBt:
-                callPhone();
-                break;
-            case R.id.enviarEmailBt:
-                sendEmail();
-                break;
             case R.id.exportarPDFBt:
-                break;
-            case R.id.sitePessoalBt:
-                openBrowser();
                 break;
             case R.id.salvarBt:
                 save(contato);
@@ -64,26 +55,7 @@ public class ContatoActivity extends AppCompatActivity {
     }
 
 
-    private void callPhone(){
-        Intent ligarIntent = new Intent(Intent.ACTION_CALL);
-        ligarIntent.setData(Uri.parse("tel:" + activityContatoBinding.telefoneEt.getText().toString()));
-        startActivity(ligarIntent);
-    }
 
-    private void openBrowser(){
-        Intent abrirNavegadorIntent = new Intent(Intent.ACTION_VIEW);
-        abrirNavegadorIntent.setData(Uri.parse("https://" + activityContatoBinding.sitePessoalEt.getText().toString()));
-        startActivity(abrirNavegadorIntent);
-    }
-
-    private void sendEmail(){
-        Intent enviarEmailIntent = new Intent(Intent.ACTION_SENDTO);
-        enviarEmailIntent.setData(Uri.parse("mailto:"));
-        enviarEmailIntent.putExtra(Intent.EXTRA_EMAIL,new String[]{ activityContatoBinding.emailEt.getText().toString() });
-        enviarEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "Contato");
-        enviarEmailIntent.putExtra(Intent.EXTRA_TEXT, "Teste");
-        startActivity(enviarEmailIntent);
-    }
 
     private void save(Contato contato){
         Intent retornoIntent = new Intent();

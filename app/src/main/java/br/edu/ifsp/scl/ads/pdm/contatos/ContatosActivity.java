@@ -5,9 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
@@ -18,7 +22,7 @@ public class ContatosActivity extends AppCompatActivity {
 
     private ActivityContatosBinding activityContatosBinding;
     private ArrayList<Contato> contatosList;
-    private ArrayAdapter<String> contatosAdapter;
+    private ContatosAdapter contatosAdapter;
     private final int NOVO_CONTATO_REQUEST_CODE = 0;
 
     @Override
@@ -30,11 +34,18 @@ public class ContatosActivity extends AppCompatActivity {
         contatosList = new ArrayList<>();
         //popularContatosList();
 
-        contatosAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, contatosList);
+        contatosAdapter = new ContatosAdapter(this, R.layout.view_contato, contatosList);
 
         activityContatosBinding.contatosLv.setAdapter(contatosAdapter);
+
+        registerForContextMenu(activityContatosBinding.contatosLv);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterForContextMenu(activityContatosBinding.contatosLv);
+    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -64,18 +75,37 @@ public class ContatosActivity extends AppCompatActivity {
         }
     }
 
-//    private void popularContatosList() {
-//        for (int i = 0; i < 20; i++) {
-//            contatosList.add(
-//                    new Contato(
-//                            "Nome " + i,
-//                            "E-mail " + i,
-//                            "Telefone " + i,
-//                            ( i % 2 == 0 ) ? false : true,
-//                            "Celular " + i,
-//                            "www.site" + i + ".com.br"
-//                    )
-//            );
-//        }
-//    }
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        getMenuInflater().inflate(R.menu.context_menu_contato, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+
+        Contato contato = contatosList.get(menuInfo.position);
+
+        switch (item.getItemId()){
+            case R.id.enviarEmailMi:
+                Intent enviarEmail = new Intent(Intent.ACTION_SENDTO, Uri.parse("mailto: "));
+                enviarEmail.putExtra(Intent.EXTRA_EMAIL, new String[] {contato.getEmail()});
+                enviarEmail.putExtra(Intent.EXTRA_SUBJECT, contato.getNome());
+                enviarEmail.putExtra(Intent.EXTRA_TEXT, contato.toString());
+                startActivity(enviarEmail);
+                return true;
+            case R.id.ligarMi:
+                return true;
+            case R.id.acessarSiteMi:
+                return true;
+            case R.id.detalhesContatoMi:
+                return true;
+            case R.id.editarContatoMi:
+                return true;
+            case R.id.removerContatoMi:
+                return true;
+            default:
+                return false;
+        }
+    }
 }
