@@ -42,6 +42,7 @@ public class ContatosAdapter extends ArrayAdapter<Contato> {
             contatoViewHolder = new ContatoViewHolder();
             contatoViewHolder.nomeContatoTv = viewContatoBinding.nomeContatoTv;
             contatoViewHolder.emailContatotv = viewContatoBinding.emailContatoTv;
+            contatoViewHolder.telefoneContatoTv = viewContatoBinding.telefoneContatoTv;
 
             convertView.setTag(contatoViewHolder);
         }
@@ -52,6 +53,7 @@ public class ContatosAdapter extends ArrayAdapter<Contato> {
         Contato contato = getItem(position);
         contatoViewHolder.nomeContatoTv.setText(contato.getNome());
         contatoViewHolder.emailContatotv.setText(contato.getEmail());
+        contatoViewHolder.telefoneContatoTv.setText(contato.getTelefone());
 
         return convertView;
     }
@@ -59,26 +61,8 @@ public class ContatosAdapter extends ArrayAdapter<Contato> {
     private class ContatoViewHolder {
         public TextView nomeContatoTv;
         public TextView emailContatotv;
+        public TextView telefoneContatoTv;
     }
 
-//    private void callPhone(){
-//        Intent ligarIntent = new Intent(Intent.ACTION_CALL);
-//        ligarIntent.setData(Uri.parse("tel:" + activityContatoBinding.telefoneEt.getText().toString()));
-//        startActivity(ligarIntent);
-//    }
-//
-//    private void openBrowser(){
-//        Intent abrirNavegadorIntent = new Intent(Intent.ACTION_VIEW);
-//        abrirNavegadorIntent.setData(Uri.parse("https://" + activityContatoBinding.sitePessoalEt.getText().toString()));
-//        startActivity(abrirNavegadorIntent);
-//    }
-//
-//    private void sendEmail(){
-//        Intent enviarEmailIntent = new Intent(Intent.ACTION_SENDTO);
-//        enviarEmailIntent.setData(Uri.parse("mailto:"));
-//        enviarEmailIntent.putExtra(Intent.EXTRA_EMAIL,new String[]{ activityContatoBinding.emailEt.getText().toString() });
-//        enviarEmailIntent.putExtra(Intent.EXTRA_SUBJECT, "Contato");
-//        enviarEmailIntent.putExtra(Intent.EXTRA_TEXT, "Teste");
-//        startActivity(enviarEmailIntent);
-//    }
+
 }

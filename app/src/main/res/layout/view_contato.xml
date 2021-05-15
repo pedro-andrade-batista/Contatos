@@ -9,7 +9,7 @@
         android:id="@+id/nomeContatoTv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Nome"
+        android:text="@string/nome_completo"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,13 +17,23 @@
 
     <TextView
         android:id="@+id/emailContatoTv"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="E-mail"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/site_pessoal"
+        app:layout_constraintEnd_toStartOf="@id/telefoneContatoTv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nomeContatoTv" />
+        app:layout_constraintTop_toBottomOf="@id/nomeContatoTv"
+        app:layout_constraintRight_toLeftOf="@id/telefoneContatoTv"/>
 
-
+    <TextView
+        android:id="@+id/telefoneContatoTv"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/telefone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/emailContatoTv"
+        app:layout_constraintTop_toBottomOf="@id/nomeContatoTv"
+        app:layout_constraintLeft_toRightOf="@id/emailContatoTv"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
