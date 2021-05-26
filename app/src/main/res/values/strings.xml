@@ -13,4 +13,9 @@
     <string name="acessar_site_pessoal">Acessar site pessoal</string>
     <string name="exportar_pdf">Exportar PDF</string>
     <string name="salvar">Salvar</string>
+    <string name="enviar_e_mail">Enviar E-mail</string>
+    <string name="chamar">Chamar</string>
+    <string name="acessar_site">Acessar site</string>
+    <string name="editar">Editar</string>
+    <string name="remover">Remover</string>
 </resources>

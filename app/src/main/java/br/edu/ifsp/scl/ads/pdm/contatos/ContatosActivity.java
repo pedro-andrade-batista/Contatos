@@ -3,6 +3,7 @@ package br.edu.ifsp.scl.ads.pdm.contatos;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -17,45 +18,64 @@ import android.widget.ArrayAdapter;
 import java.util.ArrayList;
 
 import br.edu.ifsp.scl.ads.pdm.contatos.databinding.ActivityContatosBinding;
+import br.edu.ifsp.scl.ads.pdm.contatos.databinding.ActivityContatosRvBinding;
 
-public class ContatosActivity extends AppCompatActivity {
+public class ContatosActivity extends AppCompatActivity implements OnContatoClickListener {
 
-    private ActivityContatosBinding activityContatosBinding;
+    //private ActivityContatosBinding activityContatosBinding;
+    private ActivityContatosRvBinding activityContatosRvBinding;
+
     private ArrayList<Contato> contatosList;
-    private ContatosAdapter contatosAdapter;
+
+    //private ContatosAdapter contatosAdapter;
+    private ContatosRvAdapter contatosRvAdapter;
+
     private final int NOVO_CONTATO_REQUEST_CODE = 0;
     private final int EDITAR_CONTATO_REQUEST_CODE = 1;
     private Contato contato;
 
+    private LinearLayoutManager contatosLinearLayoutManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        activityContatosBinding = ActivityContatosBinding.inflate(getLayoutInflater());
-        setContentView(activityContatosBinding.getRoot());
+//        activityContatosBinding = ActivityContatosBinding.inflate(getLayoutInflater());
+//        setContentView(activityContatosBinding.getRoot());
+
+        activityContatosRvBinding = ActivityContatosRvBinding.inflate(getLayoutInflater());
+        setContentView(activityContatosRvBinding.getRoot());
 
         contatosList = new ArrayList<>();
         popularContatosList();
 
-        contatosAdapter = new ContatosAdapter(this, R.layout.view_contato, contatosList);
+        contatosLinearLayoutManager = new LinearLayoutManager(this);
 
-        activityContatosBinding.contatosLv.setAdapter(contatosAdapter);
+//        contatosAdapter = new ContatosAdapter(this, R.layout.view_contato, contatosList);
+        contatosRvAdapter = new ContatosRvAdapter(contatosList, this, getMenuInflater());
 
-        registerForContextMenu(activityContatosBinding.contatosLv);
+//      activityContatosBinding.contatosLv.setAdapter(contatosAdapter);
+        activityContatosRvBinding.contatosRv.setAdapter(contatosRvAdapter);
+        activityContatosRvBinding.contatosRv.setLayoutManager(contatosLinearLayoutManager);
 
 
-        activityContatosBinding.contatosLv.setOnItemClickListener(((parent, view, position, id) -> {
-            contato = contatosList.get(position);
-            Intent detalhesIntent = new Intent(this, ContatoActivity.class);
-            detalhesIntent.putExtra(Intent.EXTRA_USER, contato);
-            startActivity(detalhesIntent);
+        //registerForContextMenu(activityContatosBinding.contatosLv);
 
-        }));
+
+//        activityContatosBinding.contatosLv.setOnItemClickListener(((parent, view, position, id) -> {
+//            contato = contatosList.get(position);
+//            Intent detalhesIntent = new Intent(this, ContatoActivity.class);
+//            detalhesIntent.putExtra(Intent.EXTRA_USER, contato);
+//            startActivity(detalhesIntent);
+//
+//        }));
+
+
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterForContextMenu(activityContatosBinding.contatosLv);
+//        unregisterForContextMenu(activityContatosBinding.contatosLv);
     }
 
     @Override
@@ -81,7 +101,8 @@ public class ContatosActivity extends AppCompatActivity {
             Contato contato = (Contato) data.getSerializableExtra(Intent.EXTRA_USER); // modo sem criar constante
             if (contato != null) {
                 contatosList.add(contato);
-                contatosAdapter.notifyDataSetChanged(); // notifica o adapter a alteracao no conjunto de dados
+//                contatosAdapter.notifyDataSetChanged(); // notifica o adapter a alteracao no conjunto de dados
+                contatosRvAdapter.notifyDataSetChanged();
             }
         }
         else{
@@ -91,7 +112,8 @@ public class ContatosActivity extends AppCompatActivity {
                 if (contato != null && posicao != -1) {
                     contatosList.remove(posicao);
                     contatosList.add(posicao, contato);
-                    contatosAdapter.notifyDataSetChanged(); // notifica o adapter a alteracao no conjunto de dados
+//                    contatosAdapter.notifyDataSetChanged(); // notifica o adapter a alteracao no conjunto de dados
+                    contatosRvAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -104,9 +126,14 @@ public class ContatosActivity extends AppCompatActivity {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//        AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+//
+//        contato = contatosList.get(menuInfo.position);
 
-        contato = contatosList.get(menuInfo.position);
+        contato = contatosList.get(contatosRvAdapter.getPosicao());
+
+        int posicao = contatosRvAdapter.getPosicao();
+
 
         switch (item.getItemId()){
             case R.id.enviarEmailMi:
@@ -118,12 +145,11 @@ public class ContatosActivity extends AppCompatActivity {
             case R.id.acessarSiteMi:
                 openBrowser(contato);
                 return true;
-            case R.id.detalhesContatoMi:
-                return true;
             case R.id.editarContatoMi:
                 Intent editarContatoIntent = new Intent(this, ContatoActivity.class);
                 editarContatoIntent.putExtra(Intent.EXTRA_USER, contato);
-                editarContatoIntent.putExtra(Intent.EXTRA_INDEX, menuInfo.position);
+//                editarContatoIntent.putExtra(Intent.EXTRA_INDEX, menuInfo.position);
+                editarContatoIntent.putExtra(Intent.EXTRA_INDEX, posicao);
                 startActivityForResult(editarContatoIntent, EDITAR_CONTATO_REQUEST_CODE);
                 return true;
             case R.id.removerContatoMi:
@@ -172,6 +198,15 @@ public class ContatosActivity extends AppCompatActivity {
 
     private void removeContato(Contato contato){
         contatosList.remove(contato);
-        contatosAdapter.notifyDataSetChanged();
+//        contatosAdapter.notifyDataSetChanged();
+        contatosRvAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onContatoClick(int posicao) {
+        contato = contatosList.get(posicao);
+        Intent detalhesIntent = new Intent(this, ContatoActivity.class);
+        detalhesIntent.putExtra(Intent.EXTRA_USER, contato);
+        startActivity(detalhesIntent);
     }
 }
